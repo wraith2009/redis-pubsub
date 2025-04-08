@@ -27,38 +27,12 @@ async function main() {
 
         const submission = JSON.parse(response.element);
 
-        await processSubmission(submission);
-
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     } catch (error) {
       console.error("Error processing submission:", error);
       await new Promise((resolve) => setTimeout(resolve, 5000));
     }
-  }
-}
-
-async function processSubmission(submission: any) {
-  try {
-    console.log("Processing submission for:", submission.name);
-
-    const updateMessage = JSON.stringify({
-      type: "submission_processed",
-      submission_from: submission.name,
-      email: submission.email,
-      timestamp: Date.now(),
-      status: "completed",
-    });
-
-    const publishClient = createClient();
-    await publishClient.connect();
-
-    await publishClient.publish("worker_updates", updateMessage);
-    console.log("Published processing update");
-
-    await publishClient.disconnect();
-  } catch (error) {
-    console.error("Error in processing submission:", error);
   }
 }
 

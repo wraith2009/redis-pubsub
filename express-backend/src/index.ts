@@ -2,7 +2,6 @@ import express from "express";
 import { createClient } from "redis";
 
 const redisClient = createClient();
-const subscriberClient = createClient();
 
 const app = express();
 app.use(express.json());
@@ -54,16 +53,6 @@ app.get("/submission-status", (req, res) => {
 async function startServer() {
   try {
     await redisClient.connect();
-
-    await subscriberClient.connect();
-    await subscriberClient.subscribe("worker_updates", (message) => {
-      try {
-        const update = JSON.parse(message);
-        console.log("Received worker update:", update);
-      } catch (error) {
-        console.error("Error processing worker update:", error);
-      }
-    });
 
     const PORT = process.env.PORT || 8000;
     app.listen(PORT, () => {
